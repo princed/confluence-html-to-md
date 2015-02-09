@@ -12,13 +12,15 @@ function filterFileHtml(name) {
 
 function convertFile(name) {
 	var file = fs.readFileSync(name);
+	console.log('Converting file', name);
 	var html = cheerio.load(file)('.pagebody').html(); 	
 	var mdName = name.replace(htmlExtesionRE, '.md');
 	var mdContent = md(html);
 	
 	fs.writeFileSync(mdName, mdContent);
+	console.log('File', mdName, 'written');
 }
 
-fs.readdirSync(__dirname)
+fs.readdirSync(process.cwd())
 	.filter(filterFileHtml)
 	.forEach(convertFile);

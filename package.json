@@ -1,6 +1,6 @@
 {
   "name": "confluence-html-to-md",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Convert confluence exported html to markdown",
   "bin" :"./index.js",
   "files": "index.js",
