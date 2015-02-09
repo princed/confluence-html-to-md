@@ -3,6 +3,7 @@
 var cheerio = require('cheerio');
 var md = require('html-md');
 var fs = require('fs');
+var argv = require('yargs').argv;
 
 var htmlExtesionRE = /\.html?$/;
 
@@ -10,12 +11,35 @@ function filterFileHtml(name) {
 	return htmlExtesionRE.test(name);
 }
 
+function convertHtml(file) {
+	var html = cheerio.load(file);
+	
+	var content = html('.pagebody');
+	content.find('.pageheader').remove();
+	content.find('.pagesubheading').remove();
+	
+	var title = html('title').text();
+
+	if (argv.titleClean) {
+		title = title.replace(argv.titleClean, '');
+	}
+	
+	var markdown = md(content.html());
+	
+	markdown = '---\n' +
+						 'title: ' + title +  '\n' +
+						 '---\n\n' + 
+	           markdown;
+
+	return markdown;	
+}
+
 function convertFile(name) {
-	var file = fs.readFileSync(name);
 	console.log('Converting file', name);
-	var html = cheerio.load(file)('.pagebody').html(); 	
+	
+	var file = fs.readFileSync(name);
+	var mdContent = convertHtml(file);
 	var mdName = name.replace(htmlExtesionRE, '.md');
-	var mdContent = md(html);
 	
 	fs.writeFileSync(mdName, mdContent);
 	console.log('File', mdName, 'written');
