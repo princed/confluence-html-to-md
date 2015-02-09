@@ -1,5 +1,6 @@
 *.log
 *.md
+!README.md
 *.html
 .idea
 node_modules
