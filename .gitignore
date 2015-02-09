@@ -1,0 +1,7 @@
+*.log
+*.md
+*.html
+.idea
+node_modules
+
+

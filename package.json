@@ -1,0 +1,13 @@
+{
+  "name": "confluence-html-to-md",
+  "version": "1.0.0",
+  "description": "Convert confluence exported html to markdown",
+  "bin" :"./index.js",
+  "files": "index.js",
+  "author": "Eugene Datsky",
+  "license": "MIT",
+  "dependencies": {
+    "cheerio": "0.18.0",
+    "html-md": "3.0.2"
+  }
+}
