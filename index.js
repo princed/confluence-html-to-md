@@ -5,6 +5,7 @@ var md = require('html-md');
 var fs = require('fs');
 var argv = require('yargs').argv;
 
+var imagePrefixRE = /(!\[]\()attachments/g;
 var htmlExtesionRE = /\.html?$/;
 
 function filterFileHtml(name) {
@@ -17,6 +18,10 @@ function convertHtml(file) {
 	var content = html('.pagebody');
 	content.find('.pageheader').remove();
 	content.find('.pagesubheading').remove();
+
+	var attachments = content.find('a[name=attachments]').parent();
+	attachments.next().remove();
+	attachments.remove();
 	
 	var title = html('title').text();
 
@@ -24,12 +29,21 @@ function convertHtml(file) {
 		title = title.replace(argv.titleClean, '');
 	}
 	
-	var markdown = md(content.html());
+	var markdown = md(content.html(), {
+		inline: true
+	});
 	
 	markdown = '---\n' +
 						 'title: ' + title +  '\n' +
-						 '---\n\n' + 
+						 '---\n' +
+						 '# ' + title + '\n' + 
 	           markdown;
+	
+	if (argv.attachmentsPath) {
+		return markdown.replace(imagePrefixRE, function(match, prefix) {
+		  return prefix + argv.attachmentsPath;
+		});
+	}
 
 	return markdown;	
 }
